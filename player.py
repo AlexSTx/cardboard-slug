@@ -20,6 +20,12 @@ class Player(pygame.sprite.Sprite):
     self.on_floor = True
     self.idle = True
 
+    # player interaction
+    self.can_shoot = True
+    self.delay = 0.5
+    self.last_shot = pygame.time.get_ticks()
+    self.time_passed = 0
+
 
   def get_input(self):
     keys = pygame.key.get_pressed()
@@ -34,18 +40,28 @@ class Player(pygame.sprite.Sprite):
     if keys[pygame.K_SPACE] and self.on_floor == True:
       self.jump()    
 
-    if pygame.mouse.get_pressed()[0]:
-      self.shot(pygame.mouse.get_pos())
+    if pygame.mouse.get_pressed()[0] and self.can_shoot:
+      self.shoot(pygame.mouse.get_pos())
 
 
-  def shot(self, target):
+  def shoot(self, target):
     direction = pygame.math.Vector2(target[0] - self.rect.x, target[1] - self.rect.y) 
     self.projectiles.add(Projectile((self.rect.center), direction))
+
+    self.last_shot = pygame.time.get_ticks()
+    self.time_passed = 0
+    self.can_shoot = False
 
 
   def apply_gravity(self):
     self.direction.y += self.gravity
     self.rect.y += self.direction.y
+
+
+  def update_delay(self):
+    self.time_passed = (pygame.time.get_ticks() - self.last_shot)/1000
+    if self.time_passed > self.delay:
+      self.can_shoot = True
 
 
   def jump(self):
@@ -54,3 +70,5 @@ class Player(pygame.sprite.Sprite):
 
   def update(self):
     self.get_input()
+    self.update_delay()
+    
