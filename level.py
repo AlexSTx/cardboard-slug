@@ -11,6 +11,8 @@ class Level:
   def __init__(self, level_data, surface):
 
     # entities
+    self.collidable_tiles = pygame.sprite.Group()
+    self.non_collidable_tiles = pygame.sprite.Group()
     self.projectiles = pygame.sprite.Group()
     self.enemies = pygame.sprite.Group()
     self.player = pygame.sprite.GroupSingle()
@@ -21,11 +23,9 @@ class Level:
 
 
     self.world_shift = 0
+      
 
-  
   def setup_level(self, layout):
-    self.tiles = pygame.sprite.Group()
-
     for row_index, row in enumerate(layout):
       for col_index, cell in enumerate(row):
         x = col_index * tile_size
@@ -33,12 +33,15 @@ class Level:
 
         if cell == 'X':
           tile = Tile((x, y), tile_size)
-          self.tiles.add(tile)
+          self.collidable_tiles.add(tile)
+        if cell == 'V':
+          tile = Tile((x, y), tile_size)
+          self.non_collidable_tiles.add(tile)
         if cell == 'P':
           player_sprite = Player((x, y), self.projectiles)
           self.player.add(player_sprite)
         if cell == 'S':
-          enemy = Soldier((x, y))
+          enemy = Soldier((x, y), self.collidable_tiles, self.projectiles)
           self.enemies.add(enemy)
 
   
@@ -50,7 +53,7 @@ class Level:
     if player_x < (screen_width / 4) and direction_x < 0:
       self.world_shift = 8
       player.speed = 0
-    elif player_x > (3 * screen_width / 4) and direction_x > 0:
+    elif player_x > screen_width / 2 and direction_x > 0:
       self.world_shift = -8
       player.speed = 0
     else:
@@ -63,22 +66,15 @@ class Level:
     player.rect.x += player.direction.x * player.speed
 
     # player
-    for tile in self.tiles.sprites():
+    for tile in self.collidable_tiles.sprites():
       if tile.rect.colliderect(player.rect):
         if player.direction.x < 0:
           player.rect.left = tile.rect.right
         elif player.direction.x > 0:
           player.rect.right = tile.rect.left
-
-    # # enemies
-    # for enemy in self.enemies.sprites():
-    #   if enemy.type == 'soldier':
-    #     for tile in self.tiles.sprites():
-    #       if tile.rect.colliderect(enemy.rect):
-    #         if enemy.direction.x < 0:
-    #           enemy.rect.left = tile.rect.right
-    #         elif enemy.direction.x > 0:
-    #           enemy.rect.right = tile.rect.left
+      for projectile in self.projectiles.sprites():
+        if tile.rect.colliderect(projectile.rect) and projectile.type in [-1, 1]:
+            projectile.kill()
 
 
   def vertical_movement_collision(self):
@@ -88,32 +84,26 @@ class Level:
     player.on_floor = False
 
     # player
-    for tile in self.tiles.sprites():
+    for tile in self.collidable_tiles.sprites():
       if tile.rect.colliderect(player.rect):
         if player.direction.y > 0:
           player.rect.bottom = tile.rect.top
           player.direction.y = 0
           player.on_floor = True
         elif player.direction.y < 0:
-          player.rect.top = tile.rect.bottoms
+          player.rect.top = tile.rect.bottom
           player.direction.y = 0
-
-      # for enemy in self.enemies.sprites():
-      #   if tile.rect.colliderect(enemy.rect):
-      #     if enemy.type == 'soldier':
-      #       if enemy.direction.y > 0:
-      #         enemy.rect.bottom = tile.rect.top
-      #         enemy.direction.y = 0
-      #       elif enemy.direction.y < 0:
-      #         enemy.rect.top = tile.rect.bottom
-      #         enemy.direction.y = 0
+      for projectile in self.projectiles.sprites(): 
+        if tile.rect.colliderect(projectile.rect) and projectile.type in [-1, 1]:
+            projectile.kill()
     
-
 
   def run(self):      
     # level tiles
-    self.tiles.update(self.world_shift)
-    self.tiles.draw(self.display_surface)
+    self.collidable_tiles.update(self.world_shift)
+    self.non_collidable_tiles.update(self.world_shift)
+    self.collidable_tiles.draw(self.display_surface)
+    self.non_collidable_tiles.draw(self.display_surface)
     self.scroll_x()
     
     # player
