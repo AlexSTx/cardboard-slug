@@ -16,14 +16,13 @@ class Projectile(pygame.sprite.Sprite):
     self.direction = direction
 
     self.gravity = 0.01
-    self.speed = 60
+    self.speed = 50
 
 
   def move(self):
     x = self.direction[0]
     y = self.direction[1]
 
-    print (y)
     self.vector_module = sqrt(x*x + y*y)
     self.direction.x /= self.vector_module
     self.direction.y /= self.vector_module

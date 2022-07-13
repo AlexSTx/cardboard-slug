@@ -4,6 +4,8 @@ from projectile import Projectile
 class Player(pygame.sprite.Sprite):
   def __init__(self, pos, projectiles):
     super().__init__()
+    self.type = 'player'
+
     self.image = pygame.Surface((32, 64))
     self.image.fill('red')
     self.rect = self.image.get_rect(topleft = pos)
@@ -22,7 +24,7 @@ class Player(pygame.sprite.Sprite):
 
     # player interaction
     self.can_shoot = True
-    self.delay = 0.5
+    self.delay = 0.4
     self.last_shot = pygame.time.get_ticks()
     self.time_passed = 0
 
@@ -66,6 +68,9 @@ class Player(pygame.sprite.Sprite):
 
   def jump(self):
     self.direction.y = self.jump_speed
+
+
+    
 
 
   def update(self):
