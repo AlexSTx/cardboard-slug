@@ -7,6 +7,7 @@ from player import Player
 
 from soldierRanged import SoldierRanged
 from soldierMeelee import SoldierMeelee
+from plane import Plane
 
 class Level:
   def __init__(self, level_data, surface):
@@ -46,6 +47,9 @@ class Level:
           self.enemies.add(enemy)
         if cell == 's':
           enemy = SoldierMeelee((x, y), self.collidable_tiles)
+          self.enemies.add(enemy)
+        if cell == 'A':
+          enemy = Plane((x, y), self.projectiles)
           self.enemies.add(enemy)
 
   
@@ -124,7 +128,7 @@ class Level:
     self.player.draw(self.display_surface)
 
     # projectiles
-    self.projectiles.update()
+    self.projectiles.update(self.world_shift)
     self.projectiles.draw(self.display_surface)
     self.check_damage()
 

@@ -42,7 +42,7 @@ class Enemy(pygame.sprite.Sprite):
 
 
   def alert(self):
-    if self.player_distance < self.alert_radius:
+    if self.alert_radius == 0 or self.player_distance < self.alert_radius:
       self.alert_state = True
       self.alerted = pygame.time.get_ticks()
       self.alert_timer = 0

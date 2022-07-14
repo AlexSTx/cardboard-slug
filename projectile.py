@@ -39,6 +39,7 @@ class Projectile(pygame.sprite.Sprite):
       self.rect.y += self.direction.y
 
   
-  def update(self):
+  def update(self, x_shift):
+    self.rect.x += x_shift
     self.move()
     self.apply_gravity()
