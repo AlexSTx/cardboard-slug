@@ -104,6 +104,7 @@ class Level:
         for enemy in self.enemies.sprites():
           if enemy.rect.colliderect(projectile.rect):
             enemy.take_hit(projectile.damage)
+            projectile.kill()
 
 
   def run(self):      
