@@ -98,6 +98,14 @@ class Level:
             projectile.kill()
     
 
+  def check_damage(self):
+    for projectile in self.projectiles.sprites():
+      if projectile.type > 0:
+        for enemy in self.enemies.sprites():
+          if enemy.rect.colliderect(projectile.rect):
+            enemy.take_hit(projectile.damage)
+
+
   def run(self):      
     # level tiles
     self.collidable_tiles.update(self.world_shift)
@@ -113,6 +121,7 @@ class Level:
     # projectiles
     self.projectiles.update()
     self.projectiles.draw(self.display_surface)
+    self.check_damage()
 
     # enemies
     self.enemies.update(self.world_shift, self.player.sprite)

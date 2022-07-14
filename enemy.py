@@ -76,6 +76,12 @@ class Enemy(pygame.sprite.Sprite):
         self.action = 'patrol'
 
 
+  def take_hit(self, damage):
+    self.life -= damage
+    if self.life <= 0:
+      self.kill()
+
+
   def follow(self):
     pass
 

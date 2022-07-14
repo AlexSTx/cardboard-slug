@@ -3,7 +3,7 @@ from settings import screen_height
 from math import sqrt
 
 class Projectile(pygame.sprite.Sprite):
-  def __init__(self, pos, direction, type = 1, speed = 50, weight = 0.01, height_increase = 30):
+  def __init__(self, pos, direction, type = 1, speed = 30, weight = 0.01, height_increase = 30, damage = 1):
     super().__init__()
 
     self.type = type
@@ -17,6 +17,7 @@ class Projectile(pygame.sprite.Sprite):
 
     self.gravity = weight
     self.speed = speed
+    self.damage = damage
 
 
   def move(self):
