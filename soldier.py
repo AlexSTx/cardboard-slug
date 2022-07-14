@@ -1,4 +1,6 @@
 import pygame
+from random import randint, random
+
 from enemy import Enemy
 from projectile import Projectile
 
@@ -8,9 +10,10 @@ class Soldier(Enemy):
 
     self.collidable_tiles = collidable_tiles
 
-    self.speed = 3
+    self.speed = 2 * (1 + random())
 
     self.projectiles = projectiles
+    self.minimum_attack_distance = randint(250, 450)
 
 
   def can_move_forward(self):
@@ -51,9 +54,9 @@ class Soldier(Enemy):
       self.looking_right = False
 
     # checa a distância entre inimigo e player
-    if self.player_distance > 300:
+    if self.player_distance > self.minimum_attack_distance + 50:
       self.direction.x = 1
-    elif self.player_distance < 250:
+    elif self.player_distance < self.minimum_attack_distance:
       self.direction.x = -1
     else: self.direction.x = 0
 
