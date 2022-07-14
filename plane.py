@@ -17,7 +17,7 @@ class Plane(Enemy):
 		self.image = self.image_facing_left
 		self.direction = pygame.math.Vector2(-1, 0)
 		
-		self.speed = 8
+		self.speed = 9
 
 		self.attack_delay = 0.7
 		self.projectiles = projectiles
