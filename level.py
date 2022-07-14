@@ -5,7 +5,8 @@ from settings import tile_size, screen_width
 from tiles import Tile
 from player import Player
 
-from soldier import Soldier
+from soldierRanged import SoldierRanged
+from soldierMeelee import SoldierMeelee
 
 class Level:
   def __init__(self, level_data, surface):
@@ -41,7 +42,10 @@ class Level:
           player_sprite = Player((x, y), self.projectiles)
           self.player.add(player_sprite)
         if cell == 'S':
-          enemy = Soldier((x, y), self.collidable_tiles, self.projectiles)
+          enemy = SoldierRanged((x, y), self.collidable_tiles, self.projectiles)
+          self.enemies.add(enemy)
+        if cell == 's':
+          enemy = SoldierMeelee((x, y), self.collidable_tiles)
           self.enemies.add(enemy)
 
   

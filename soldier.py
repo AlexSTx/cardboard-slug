@@ -1,19 +1,15 @@
 import pygame
-from random import randint, random
+from random import random
 
 from enemy import Enemy
-from projectile import Projectile
 
 class Soldier(Enemy):
-  def __init__(self, pos, collidable_tiles, projectiles, score = 100, life = 3, variant = 'blue'):
+  def __init__(self, pos, collidable_tiles, score, life, variant):
     super().__init__('soldier', pos, score, life, variant, 400, 500)
 
     self.collidable_tiles = collidable_tiles
 
     self.speed = 2 * (1 + random())
-
-    self.projectiles = projectiles
-    self.minimum_attack_distance = randint(250, 450)
 
 
   def can_move_forward(self):
@@ -54,9 +50,9 @@ class Soldier(Enemy):
       self.looking_right = False
 
     # checa a distância entre inimigo e player
-    if self.player_distance > self.minimum_attack_distance + 50:
+    if self.player_distance > self.minimum_player_distance:
       self.direction.x = 1
-    elif self.player_distance < self.minimum_attack_distance:
+    elif self.player_distance < self.minimum_player_distance:
       self.direction.x = -1
     else: self.direction.x = 0
 
@@ -67,15 +63,6 @@ class Soldier(Enemy):
     # se puder andar, anda
     if self.can_move_forward():
       self.walk()
-
-
-  def attack(self, player):
-    direction = pygame.math.Vector2(player.rect.centerx - self.rect.x, player.rect.centery - self.rect.y) 
-    self.projectiles.add(Projectile((self.rect.center), direction, -1, 15, 0.005))
-
-    self.last_attack = pygame.time.get_ticks()
-    self.time_passed_last_attack = 0
-    self.can_attack = False
 
 
   def update(self, x_shift, player):
